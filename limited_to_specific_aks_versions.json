@@ -1,0 +1,47 @@
+{
+    "properties": {
+      "displayName": "Kubernetes Services limited to certain versions",
+      "policyType": "Custom",
+      "mode": "all",
+      "description": "Only allowed AKS versions can be used",
+      "metadata": {
+        "version": "0.1.0"
+      },
+      "parameters": {
+        "effect": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Effect",
+            "description": "Enable or disable the execution of the policy"
+          },
+          "allowedValues": [
+            "Audit",
+            "Disabled"
+          ],
+          "defaultValue": "Audit"
+        }
+      },
+      "policyRule": {
+        "if": {
+          "allOf": [
+            {
+              "field": "type",
+              "equals": "Microsoft.ContainerService/managedClusters"
+            },
+            {
+              "not": 
+                {
+                  "field": "Microsoft.ContainerService/managedClusters/kubernetesVersion",
+                  "in": [
+                    "1.24.9"
+                  ]
+                }
+            }
+          ]
+        },
+        "then": {
+          "effect": "[parameters('effect')]"
+        }
+      }
+    }
+  }
